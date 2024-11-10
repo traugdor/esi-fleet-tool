@@ -68,11 +68,14 @@ FC logs into the site and posts information about a fleet operation. Completion 
         * Ping will be in a thread, not in the main channel. Thread will be deleted after 24 hours? Should not require discord admins to have to delete each thread, but it might be nice to have historic data on who usually signs up and what roles they usually fill.
 
 ## Current DEV checklist
-- [ ] Develop DB with TingoDB flatfile storage
+- [ ] Develop DB with node-persist flatfile storage
     - [ ] Users table
         - [ ] Discord ID
         - [ ] EVE Account
         - [ ] Allow many-to-one EVE &harr; Discord relationship
+    - [ ] Characters table
+    - [ ] Fleets table
+    - [ ] Settings table (for backend use after initial setup with settings.js)
 - [ ] Flesh out user system
     - [ ] Separate local admin user from Discord User
 - [ ] Create "first run" event to allow admin to setup server
