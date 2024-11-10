@@ -1,5 +1,7 @@
 # Files
 settings.js
+db.file/*
+.node-persist/*
 
 # Logs
 logs

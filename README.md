@@ -66,3 +66,31 @@ FC logs into the site and posts information about a fleet operation. Completion 
         * ???
     * Get a ping some time before fleet time. 1 hour? 30 minutes?
         * Ping will be in a thread, not in the main channel. Thread will be deleted after 24 hours? Should not require discord admins to have to delete each thread, but it might be nice to have historic data on who usually signs up and what roles they usually fill.
+
+## Current DEV checklist
+- [ ] Develop DB with TingoDB flatfile storage
+    - [ ] Users table
+        - [ ] Discord ID
+        - [ ] EVE Account
+        - [ ] Allow many-to-one EVE &harr; Discord relationship
+- [ ] Flesh out user system
+    - [ ] Separate local admin user from Discord User
+- [ ] Create "first run" event to allow admin to setup server
+- [ ] Create Discord Auth flow for users
+- [ ] Create EVE Auth flow for users to register to their Discord accounts
+- [ ] Build Admin Dashboard
+- [ ] Build FC Dashboard
+    - [ ] Pull corp fittings from ESI
+    - [ ] Allow custom EFT for custom doctrine
+    - [ ] Choose what fittings are allowed
+    - [ ] Gather fleet information (doctrine, date, time, objective, etc)
+    - [ ] Show fleet composition with preferred roles
+    - [ ] Get skills needed to fly fitted ship.
+    - [ ] Get player skills
+- [ ] Build Discord Bot for
+    - [ ] Fleet event notifications
+        - [ ] Planned event
+        - [ ] On-Demand event
+    - [ ] Buttons, Dropdowns, Bells, and Whistles for interaction
+    - [ ] Ping 1 hour before planned event
+    - [ ] Ping for On-Demand event
