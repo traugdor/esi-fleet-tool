@@ -1,4 +1,5 @@
 const db = require("node-persist");
+const { v4: uuid } = require("uuid");
 
 db.initSync({});
 

@@ -1,5 +1,3 @@
-const db = require("node-persist");
-const { v4: uuid } = require("uuid");
 const users = require("./db/users.js");
 const characters = require("./db/characters.js");
 const appSettings = require("./db/appSettings.js");
