@@ -1,5 +1,6 @@
 const express = require("express");
 const exphbs = require("express-handlebars");
+const Handlebars = require("handlebars");
 const settings = require("./settings.js");
 const db = require("./includes/db.js");
 const { forEach } = require("lodash");
@@ -21,8 +22,24 @@ const handlebars = exphbs.create({ extname: '.hbs',});
 app.engine('.hbs', handlebars.engine);
 app.set('view engine', '.hbs');
 
-//const routes = require('./server/routes/user');
-//app.use('/', routes);
+handlebars.partialsDir = './views/partials';
+
+app.get('/login', function(req, res){
+    res.render('login');
+});
+app.get('/', (req, res) => res.render('home'))
+app.use( (req, res) => {
+    console.log("404")
+    res.status(404);
+    res.render('404', {404:true})
+});
+
+Handlebars.registerHelper('if2', function(arg1, arg2, options) {
+    if(arg1 || arg2){
+        return options.fn(this);
+    }
+    return options.inverse(this);
+})
 
 /*
     TODO:

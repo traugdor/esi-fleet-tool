@@ -30,28 +30,25 @@ exports.allUsers = function(callback){
  */
 
 exports.saveNewUser = function(data, callback) {
-    const {_id, type, did, eid, character_info, access_token, refresh_token, username, password} = data;
+    const {_id,  did, eid, character_info, access_token, refresh_token} = data;
     //first make sure id = 0; If we send an actual id then fail
     if(_id == 0){
         //lookup user first
         db.getItem('users').then((users) => {
             user = users.find(function(user) {
-                return (user.type == 1 && user.username == username) || (user.type == 2 && user.did == did)
+                return (user.did == did)
             });
             if(user) {
-                callback(`User of type ${type}, DiscordID ${did} or username ${username} already exists!`, null);
+                callback(`User with DiscordID ${did} already exists!`, null);
             } else {
                 var id = uuid();
                 var newuser = {
                     _id:id,
-                    type:type,
                     did:did,
                     eid:eid,
                     character_info:character_info,
                     access_token:access_token,
-                    refresh_token:refresh_token,
-                    username:username,
-                    password:password
+                    refresh_token:refresh_token
                 }
                 users.push(newuser);
                 db.setItem('users', users).then(callback(null, newuser));
@@ -93,23 +90,5 @@ exports.getUserByEVEid = function(data, callback){
             callback(`User with EVE ID ${eid} was not found!`, null);
         } else 
             callback(null, user); 
-    })
-}
-
-/**
- * 
- * @param {*} data {username, password}
- * @param {*} callback function(error, response) { ... }
- */
-
-exports.getUserByUsernameAndPassword = function(data, callback) {
-    const {username, password} = data;
-    db.getItem('users').then(users =>{
-        user = users.find(user => user.type == 1 && user.username == username && user.password == password);
-        if(!user){
-            callback(`User with username ${username} was not found!`, null);
-        } else {
-            callback(null, user);
-        }
     })
 }
