@@ -30,7 +30,7 @@ exports.allUsers = function(callback){
  */
 
 exports.saveNewUser = function(data, callback) {
-    const {_id,  did, eid, character_info, access_token, refresh_token} = data;
+    const {_id,  did, eid, character_info, access_token, refresh_token, socketid} = data;
     //first make sure id = 0; If we send an actual id then fail
     if(_id == 0){
         //lookup user first
@@ -48,7 +48,8 @@ exports.saveNewUser = function(data, callback) {
                     eid:eid,
                     character_info:character_info,
                     access_token:access_token,
-                    refresh_token:refresh_token
+                    refresh_token:refresh_token,
+                    socketid: socketid == null || socketid == undefined ? 0 : socketid
                 }
                 users.push(newuser);
                 db.setItem('users', users).then(callback(null, newuser));

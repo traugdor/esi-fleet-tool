@@ -2,8 +2,10 @@ const express = require("express");
 const exphbs = require("express-handlebars");
 const Handlebars = require("handlebars");
 const settings = require("./settings.js");
-const db = require("./includes/db.js");
-const { forEach } = require("lodash");
+const { v4: uuid } = require("uuid");
+const session = require("express-session");
+const FileStore = require("session-file-store")(session);
+const cookieParser = require("cookie-parser");
 
 const app = express();
 const port = settings.port || 8080;
@@ -24,6 +26,21 @@ app.set('view engine', '.hbs');
 
 handlebars.partialsDir = './views/partials';
 
+var sess = {
+    genid: function(req) {
+        return uuid();
+    },
+    title: settings.siteTitle,
+    resave: true,
+    saveUninitialized: true,
+    store: new FileStore(),
+    secret: settings.EVEclientID,
+    cookie: {}
+};
+
+app.use(session(sess));
+app.use(cookieParser());
+
 app.get('/login', function(req, res){
     res.render('login');
 });
@@ -33,6 +50,14 @@ app.use( (req, res) => {
     res.status(404);
     res.render('404', {404:true})
 });
+
+app.get('/Discord/SSO', (req, res) => {
+    var state = req.state;
+    var msg = "";
+    if (state == 'bot'){
+        res.send("Done. Added to discord")
+    }
+})
 
 Handlebars.registerHelper('if2', function(arg1, arg2, options) {
     if(arg1 || arg2){
@@ -58,3 +83,4 @@ Handlebars.registerHelper('if2', function(arg1, arg2, options) {
 */
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
+const sockets = require("./includes/sockets.js")(app);
