@@ -74,8 +74,29 @@ app.get('/', (req, res) => {
     const pagedata = {
         group: settings.groupName,
         site: settings.siteTitle,
+        ekb: settings.EVEKillboardLink,
+        publicChat: settings.EVEPublicChatChannel,
         loggedIn: req.session.esifleettool?.loggedIn || false,
-        fourohfour: false
+        fourohfour: false,
+        doctrines: [
+            { id: 1, name: 'Doctrine 1' },
+            { id: 2, name: 'Doctrine 2' }
+        ],
+        fittings: [
+            { id: 1, name: 'Fitting 1' },
+            { id: 2, name: 'Fitting 2' },
+            { id: 3, name: 'Fitting 3' }
+        ],
+        activeFleets: [
+            {
+                dateTime: '2023-12-25 20:00',
+                doctrine: 'Doctrine 1',
+                objective: 'Sample Fleet',
+                type: 'Scheduled',
+                status: 'Active',
+                statusClass: 'bg-success'
+            }
+        ]
     };
     
     if(!req.session.esifleettool) {
@@ -83,6 +104,10 @@ app.get('/', (req, res) => {
             loggedIn: false,
             uuid: uuid()
         };
+    }
+    
+    if (req.session.esifleettool?.loggedIn) {
+        pagedata.discordUser = req.session.esifleettool.discordUser;
     }
     
     res.render('home', pagedata);

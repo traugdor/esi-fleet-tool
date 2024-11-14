@@ -73,11 +73,11 @@ FC logs into the site and posts information about a fleet operation. Completion 
         - [x] Discord ID
         - [x] EVE Account
         - [x] Allow many-to-one EVE &harr; Discord relationship
-    - [x] Characters table
-    - [x] Fleets table
+    - [x] EVE Characters table
+    - [x] EVE Fleets table
 - [ ] Flesh out user system
-- [ ] Create Discord Auth flow for users
-    - [ ] Allow Discord users to stay logged in
+- [x] Create Discord Auth flow for users
+    - [x] Allow Discord users to stay logged in
 - [ ] Create EVE Auth flow for users to register to their Discord accounts
 - [ ] Build FC Dashboard
     - [ ] Pull corp fittings from ESI
