@@ -13,6 +13,7 @@
     "lodash": "^4.17.21",
     "node-persist": "^4.0.3",
     "request": "^2.88.2",
+    "serve-favicon": "^2.5.0",
     "session-file-store": "^1.5.0",
     "uid-safe": "^2.1.5",
     "uuid": "^11.0.2",

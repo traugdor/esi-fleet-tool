@@ -8,9 +8,12 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
         <script type="text/javascript">
             function createSocket() {
-                var webSocket = new WebSocket("ws://"+location.host + "/ws");
-                webSocket.on('open', () => {
-                    client.send("Hello there!");
+                var webSocket = new WebSocket("ws://"+location.host.split(':')[0] + ":8081");
+                webSocket.onmessage = function(message) {
+                    console.log(message.data);
+                };
+                webSocket.addEventListener('open', () => {
+                    webSocket.send("Hello there!");
                 });
             }
 
@@ -19,10 +22,14 @@
     </head>
     <body class="container">
         {{> menu}}
-        {{#if2 loggedIn 404}}
-        {{{body}}}
+        {{#if fourohfour}}
+            {{{body}}}
         {{else}}
-        {{> loginForm}}
-        {{/if2}}
+            {{#if loggedIn}}
+                {{{body}}}
+            {{else}}
+                {{> loginForm}}
+            {{/if}}
+        {{/if}}
     </body>
 </html>

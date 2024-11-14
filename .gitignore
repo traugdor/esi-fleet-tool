@@ -2,6 +2,7 @@
 settings.js
 db.file/*
 .node-persist/*
+sessions/*
 
 # Logs
 logs
