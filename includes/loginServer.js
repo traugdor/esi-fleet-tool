@@ -91,6 +91,9 @@ module.exports = function(app, settings) {
                 if (!hasRequiredRole) {
                     throw new Error('User does not have required role');
                 }
+
+                // Store member data including nickname
+                req.session.esifleettool.discordUser.nickname = memberData.nick || req.session.esifleettool.discordUser.username;
                 
                 // Set session data
                 req.session.esifleettool.loggedIn = true;

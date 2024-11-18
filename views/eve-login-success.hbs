@@ -1,0 +1,23 @@
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        <img src="{{picture}}" alt="Character Portrait" class="rounded-circle img-thumbnail" style="width: 128px; height: 128px;">
+                    </div>
+                    <h2 class="card-title">{{name}}</h2>
+                    <div class="alert alert-success mt-3">
+                        {{message}}
+                    </div>
+                    <p class="text-muted mt-3">
+                        Your character has been successfully linked to your account.
+                    </p>
+                    <div class="mt-4">
+                        <a href="/eve/login/{{discordId}}" class="btn btn-primary">Add Another Character</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

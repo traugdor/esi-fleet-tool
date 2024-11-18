@@ -115,11 +115,25 @@ app.get('/', (req, res) => {
 
 // Authentication Routes
 const loginServer = require("./includes/loginServer.js")(app, settings);
+const eveAuth = require('./includes/eveAuth.js')(app, settings);
 
 // 404 Handler
 app.use((req, res) => {
+    const pagedata = {
+        group: settings.groupName,
+        site: settings.siteTitle,
+        ekb: settings.EVEKillboardLink,
+        publicChat: settings.EVEPublicChatChannel,
+        fourohfour: true,
+        loggedIn: req.session.esifleettool?.loggedIn || false
+    };
+
+    if (req.session.esifleettool?.loggedIn) {
+        pagedata.discordUser = req.session.esifleettool.discordUser;
+    }
+
     res.status(404);
-    res.render('404', {fourohfour: true, loggedIn: false});
+    res.render('404', pagedata);
 });
 
 //-----------------------------------------------------------------------------
@@ -128,10 +142,13 @@ app.use((req, res) => {
 app.listen(port, () => console.log(`Listening on port ${port}`));
 const sockets = require("./includes/sockets.js")(app);
 
+// Initialize Discord Bot
+const discordBot = require("./includes/discordBot.js")(app, settings);
+
 /*
     TODO:
-    Get a discord bot in here
-    Setup callbacks for Discord Auth SSO
+    Get a discord bot in here -- done
+    Setup callbacks for Discord Auth SSO -- done in loginServer.js
     Setup callbacks for EVE Auth SSO
     Store some unique information in the browser cookies to identify the user.
     Install websockets
