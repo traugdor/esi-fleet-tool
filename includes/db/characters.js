@@ -24,6 +24,9 @@ db.getItem('characters').then(function(characters){
     allianceId
     allianceName
     characterInfo
+
+    characterInfo structure:
+        
 */
 
 exports.getCharacterInfo = function(data, callback) {

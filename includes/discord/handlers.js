@@ -100,11 +100,37 @@ async function handleLink(interaction, { settings }) {
     }
 }
 
+const { getCompleteCharacterInfo } = require('../esi');
+const { forceItemUpdate } = require('../esi');
+const db = require('node-persist');
+const eveAuth = require('../eveAuth');
+
+async function handleEVEUPDATED(interaction) {
+    try {
+        await interaction.deferReply({ ephemeral: true });
+        
+        console.log('Force updating Fuzzworks data...');
+        await forceItemUpdate();
+        
+        await interaction.editReply({ 
+            content: 'EVE Online item database has been successfully updated!',
+            ephemeral: true
+        });
+    } catch (error) {
+        console.error('Error in EVEUPDATED handler:', error);
+        await interaction.editReply({ 
+            content: 'There was an error updating the EVE Online item database.',
+            ephemeral: true
+        });
+    }
+}
+
 // Handler Map
 const handlers = {
     hello: handleHello,
     sync: handleSync,
-    link: handleLink
+    link: handleLink,
+    eveupdated: handleEVEUPDATED
     // Add more handlers here
 };
 

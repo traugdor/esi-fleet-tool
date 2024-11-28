@@ -100,19 +100,18 @@ exports.getUserByDiscordid = function(data, callback) {
 
 /**
  * 
- * @param {*} data {type, did, eid, character_info, socketid}
+ * @param {*} data {type, did, character_info, socketid}
  * @param {*} callback function(error, response) { ... }
  */
 
 exports.updateUser = function(data, callback) {
-    const {type, did, eid, character_info, socketid} = data;
+    const {type, did, character_info, socketid} = data;
     db.getItem('users').then((users) => {
         var user = users.find(function(user) {
             return (user.did == did)
         });
         if(user) {
             user.type = type;
-            user.eid = eid;
             user.character_info = character_info;
             user.socketid = socketid;
             db.setItem('users', users).then(callback(null, user));

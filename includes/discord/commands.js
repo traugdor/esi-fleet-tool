@@ -45,6 +45,12 @@ const commands = [
         data: new SlashCommandBuilder()
             .setName('link')
             .setDescription('Link your Discord account to your EVE Online account')
+    },
+    {
+        data: new SlashCommandBuilder()
+            .setName('eveupdated')
+            .setDescription('Force update EVE Online item database. Should only be run when EVE Online has a significant update.')
+            .setDefaultMemberPermissions('0') // Restrict to users with ADMINISTRATOR permission by default
     }
     // Add more commands here
 ];

@@ -145,11 +145,16 @@ const sockets = require("./includes/sockets.js")(app);
 // Initialize Discord Bot
 const discordBot = require("./includes/discordBot.js")(app, settings);
 
+//-----------------------------------------------------------------------------
+// ESI Integration to start the db cache and weekly updates
+//-----------------------------------------------------------------------------
+const ESI = require('./includes/esi.js');
+
 /*
     TODO:
     Get a discord bot in here -- done
     Setup callbacks for Discord Auth SSO -- done in loginServer.js
-    Setup callbacks for EVE Auth SSO
+    Setup callbacks for EVE Auth SSO -- done in eveAuth.js?
     Store some unique information in the browser cookies to identify the user.
     Install websockets
         establish lines of communication
