@@ -149,28 +149,15 @@ module.exports = async function(app, settings) {
                                                     }
                                                     getAndSaveCharacterSkills(characterId, accessToken)
                                                         .then(skills => {
-                                                            db.characters.getCharacterInfo({ characterId }, (error, character) => {
-                                                                if (error) {
-                                                                    console.log("Error getting character info:", error);
-                                                                }
-                                                                character.characterInfo.skills = skills;
-                                                                characters.updateCharacter(character, (error) => {
-                                                                    if (error) {
-                                                                        console.log("Error updating character info:", error);
-                                                                    }
-                                                                    else {
-                                                                        // Render success page
-                                                                        res.render('eve-login-success', { 
-                                                                            discordId,
-                                                                            layout: 'eve',
-                                                                            site: settings.siteTitle,
-                                                                            group: settings.groupName,
-                                                                            name: jwtContent.name,
-                                                                            picture: `https://images.evetech.net/characters/${characterId}/portrait?size=128`,
-                                                                            message: 'Character added successfully!'
-                                                                        });
-                                                                    }
-                                                                });
+                                                            // Render success page
+                                                            res.render('eve-login-success', { 
+                                                                discordId,
+                                                                layout: 'eve',
+                                                                site: settings.siteTitle,
+                                                                group: settings.groupName,
+                                                                name: jwtContent.name,
+                                                                picture: `https://images.evetech.net/characters/${characterId}/portrait?size=128`,
+                                                                message: 'Character added successfully!'
                                                             });
                                                         })
                                                         .catch(error => {
