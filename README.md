@@ -81,7 +81,7 @@ FC logs into the site and posts information about a fleet operation. Completion 
 - [ ] Create EVE Auth flow for users to register to their Discord accounts
 - [ ] Build FC Dashboard
     - [ ] Pull corp fittings from ESI
-    - [ ] Allow custom EFT for custom doctrine
+    - [ ] Allow custom EFT for custom doctrine - WIP
     - [ ] Choose what fittings are allowed
     - [ ] Gather fleet information (doctrine, date, time, objective, etc)
     - [ ] Show fleet composition with preferred roles
@@ -94,3 +94,9 @@ FC logs into the site and posts information about a fleet operation. Completion 
     - [ ] Buttons, Dropdowns, Bells, and Whistles for interaction
     - [ ] Ping 1 hour before planned event
     - [ ] Ping for On-Demand event
+- [x] Backend STUFF
+    - [x] Add ESI API wrapper
+    - [x] Add EVE item translation module
+    - [x] Add EFT parser
+    - [ ] Add skill parser
+    

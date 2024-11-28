@@ -26,7 +26,12 @@ db.getItem('characters').then(function(characters){
     characterInfo
 
     characterInfo structure:
-        
+        skills: [{skillID, level}]
+        publicInfo: {
+            corporation: {...},
+            alliance: {...},
+            ...other ESI data
+        }
 */
 
 exports.getCharacterInfo = function(data, callback) {
@@ -71,3 +76,64 @@ exports.saveNewCharacter = function(data, callback) {
         }
     });
 }
+
+exports.updateCharacter = function(data, callback) {
+    const {characterId, accessToken, refreshToken, expiresAt, characterName, corporationId, corporationName, allianceId, allianceName, characterInfo} = data;
+    db.getItem('characters').then((characters) => {
+        var character = characters.find(function(character) {
+            return (character.characterId == characterId)
+        });
+        if(character) {
+            character.accessToken = accessToken;
+            character.refreshToken = refreshToken;
+            character.expiresAt = expiresAt;
+            character.characterName = characterName;
+            character.corporationId = corporationId;
+            character.corporationName = corporationName;
+            character.allianceId = allianceId;
+            character.allianceName = allianceName;
+            character.characterInfo = characterInfo;
+            db.setItem('characters', characters).then(() => {
+                callback(null, character);
+            });
+        } else {
+            callback(`Character with characterId ${characterId} was not found!`, null);
+        }
+    });
+}
+
+/**
+ * Save or update character's public information from ESI
+ * @param {number} characterId - The character ID
+ * @param {Object} publicInfo - The public information from ESI
+ * @param {function} callback - Callback function(error, character)
+ */
+exports.saveCharacterInfo = function(characterId, publicInfo, callback) {
+    db.getItem('characters').then((characters) => {
+        var character = characters.find(function(character) {
+            return (character.characterId == characterId)
+        });
+        if(character) {
+            // Create characterInfo if it doesn't exist
+            if (!character.characterInfo) {
+                character.characterInfo = {};
+            }
+            // Save public info
+            character.characterInfo.publicInfo = publicInfo;
+            // Update basic character data
+            if (publicInfo.corporation) {
+                character.corporationId = publicInfo.corporation.corporation_id;
+                character.corporationName = publicInfo.corporation.name;
+            }
+            if (publicInfo.alliance) {
+                character.allianceId = publicInfo.alliance.alliance_id;
+                character.allianceName = publicInfo.alliance.name;
+            }
+            db.setItem('characters', characters).then(() => {
+                callback(null, character);
+            });
+        } else {
+            callback(`Character with characterId ${characterId} was not found!`, null);
+        }
+    });
+};

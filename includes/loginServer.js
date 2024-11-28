@@ -1,10 +1,11 @@
 const QueryString = require("qs");
 const { v4: uuid } = require("uuid");
+const users = require("./db/users");
 
 module.exports = function(app, settings) {
 
     app.get('/login', (req, res) => {
-        var redirectURI = QueryString.stringify({redirect_uri: settings.DiscordCallbackURL + '/Discord/SSO'});
+        var redirectURI = QueryString.stringify({redirect_uri: settings.DiscordCallbackURL + '/Discord/SSO/'});
         var clientID = QueryString.stringify({client_id: settings.DiscordAppID});
         var scopes = QueryString.stringify({scope: "identify guilds guilds.members.read messages.read guilds.members.read"});
         var state = QueryString.stringify({state: req.session.esifleettool.uuid});
@@ -17,7 +18,7 @@ module.exports = function(app, settings) {
         var apiEndpoint = 'https://discord.com/api/oauth2/token';
         var clientID = settings.DiscordAppID;
         var clientSecret = settings.DiscordClientSecret;
-        var redirectURI = settings.DiscordCallbackURL + '/Discord/SSO';
+        var redirectURI = settings.DiscordCallbackURL + '/Discord/SSO/';
         var state = req.query.state;
         var code = req.query.code;
         console.log(state, code);
@@ -71,7 +72,13 @@ module.exports = function(app, settings) {
                 const targetGuild = guildsData.find(guild => guild.id === settings.GuildId);
                 
                 if (!targetGuild) {
-                    throw new Error('User not in required guild');
+                    req.session.destroy();
+                    return res.render('error', {
+                        pageTitle: 'Access Denied',
+                        errorMessage: 'You are not a member of the required Discord server.',
+                        technicalDetails: `Server ID: ${settings.GuildId}`,
+                        fourohfour: true
+                    });
                 }
                 
                 // Get user's roles in the guild
@@ -89,23 +96,46 @@ module.exports = function(app, settings) {
                 );
                 
                 if (!hasRequiredRole) {
-                    throw new Error('User does not have required role');
+                    // Store member data including nickname for the success page
+                    req.session.esifleettool.discordUser.nickname = memberData.nick || req.session.esifleettool.discordUser.username;
+                    
+                    return res.render('login-success', {
+                        pageTitle: 'Welcome to ESI Fleet Tool',
+                        loggedIn: true,
+                        nickname: req.session.esifleettool.discordUser.nickname,
+                        fourohfour: true
+                    });
                 }
 
                 // Store member data including nickname
                 req.session.esifleettool.discordUser.nickname = memberData.nick || req.session.esifleettool.discordUser.username;
                 
-                // Set session data
-                req.session.esifleettool.loggedIn = true;
-                req.session.cookie.maxAge = 14 * 24 * 60 * 60 * 1000; // 14 days in milliseconds
+                // Save user to database
+                const userData = {
+                    _id: 0, // Let the database generate an ID
+                    did: req.session.esifleettool.discordUser.id,
+                    character_info: [], // This will be populated when they add EVE characters
+                    socketid: 0 // This will be set when they connect via websocket
+                };
                 
-                // Save session before redirect
-                req.session.save((err) => {
-                    if (err) {
-                        console.error('Session save error:', err);
-                        throw new Error('Failed to save session');
+                users.saveNewUser(userData, (error, savedUser) => {
+                    if (error && !error.includes('already exists')) {
+                        console.error('Error saving user:', error);
+                        throw new Error('Failed to save user to database');
                     }
-                    res.redirect('/');
+                    
+                    // Set session data
+                    req.session.esifleettool.loggedIn = true;
+                    req.session.cookie.maxAge = 14 * 24 * 60 * 60 * 1000; // 14 days in milliseconds
+                    
+                    // Save session before redirect
+                    req.session.save((err) => {
+                        if (err) {
+                            console.error('Session save error:', err);
+                            throw new Error('Failed to save session');
+                        }
+                        res.redirect('/');
+                    });
                 });
             })
             .catch(error => {

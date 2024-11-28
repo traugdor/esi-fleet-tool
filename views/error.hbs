@@ -1,0 +1,44 @@
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        Access Denied
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Sorry, you cannot access this application</h5>
+                    <p class="card-text">
+                        {{#if errorMessage}}
+                            {{errorMessage}}
+                        {{else}}
+                            You do not have the required permissions to use this application. Please ensure:
+                            <ul class="mt-3">
+                                <li>You are a member of the correct Discord server</li>
+                                <li>You have the necessary roles assigned</li>
+                                <li>Your account is in good standing</li>
+                            </ul>
+                        {{/if}}
+                    </p>
+                    <div class="mt-4">
+                        <a href="/login" class="btn btn-primary me-2">
+                            <i class="bi bi-discord me-2"></i>Try Again
+                        </a>
+                        <a href="/" class="btn btn-secondary">
+                            <i class="bi bi-house-door me-2"></i>Return Home
+                        </a>
+                    </div>
+                </div>
+                {{#if technicalDetails}}
+                    <div class="card-footer bg-light">
+                        <small class="text-muted">
+                            <strong>Technical Details:</strong> {{technicalDetails}}
+                        </small>
+                    </div>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</div>

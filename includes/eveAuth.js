@@ -3,6 +3,9 @@ const axios = require('axios');
 const qs = require('qs');
 const db = require('./db.js');
 const jwt = require('jsonwebtoken');
+const { getCompleteCharacterInfo } = require('./ESI/public');
+const { getAndSaveCharacterSkills } = require('./ESI/skills');
+const characters = require('./db/characters');
 
 module.exports = async function(app, settings) {
 
@@ -118,18 +121,76 @@ module.exports = async function(app, settings) {
                                     console.log("Error in db.users.updateUser: ", error);
                                     res.redirect('/eve/login/' + discordId);
                                 } else {
-                                    //show success message and redirect to EVE login
-                                    //todo: save the eve character info to the database
-                                    //first get eve character info from ESI
-                                    //todo: helper function to get character info from ESI
-                                    res.render('eve-login-success', { 
-                                        discordId,
-                                        layout: 'eve',
-                                        site: settings.siteTitle,
-                                        group: settings.groupName,
-                                        name: jwtContent.name,
-                                        picture: `https://images.evetech.net/characters/${characterId}/portrait?size=128`,
-                                        message: 'Character added successfully!'
+                                    // Save the character with auth info first
+                                    const characterData = {
+                                        characterId: characterId,
+                                        accessToken: accessToken,
+                                        refreshToken: refreshToken,
+                                        expiresAt: Math.floor(Date.now() / 1000) + response.expires_in,
+                                        characterName: jwtContent.name,
+                                        corporationId: '',  // Will be updated by public info
+                                        corporationName: '',
+                                        allianceId: '',
+                                        allianceName: '',
+                                        characterInfo: {}
+                                    };
+
+                                    characters.saveNewCharacter(characterData, (error, savedChar) => {
+                                        if (error) {
+                                            console.log("Error saving new character:", error);
+                                        }
+                                        
+                                        // Then get and save additional character info from ESI
+                                        getCompleteCharacterInfo(characterId)
+                                            .then(characterInfo => {
+                                                characters.saveCharacterInfo(characterId, characterInfo, (error) => {
+                                                    if (error) {
+                                                        console.log("Error saving character info:", error);
+                                                    }
+                                                    getAndSaveCharacterSkills(characterId, accessToken)
+                                                        .then(skills => {
+                                                            db.characters.getCharacterInfo({ characterId }, (error, character) => {
+                                                                if (error) {
+                                                                    console.log("Error getting character info:", error);
+                                                                }
+                                                                character.characterInfo.skills = skills;
+                                                                characters.updateCharacter(character, (error) => {
+                                                                    if (error) {
+                                                                        console.log("Error updating character info:", error);
+                                                                    }
+                                                                    else {
+                                                                        // Render success page
+                                                                        res.render('eve-login-success', { 
+                                                                            discordId,
+                                                                            layout: 'eve',
+                                                                            site: settings.siteTitle,
+                                                                            group: settings.groupName,
+                                                                            name: jwtContent.name,
+                                                                            picture: `https://images.evetech.net/characters/${characterId}/portrait?size=128`,
+                                                                            message: 'Character added successfully!'
+                                                                        });
+                                                                    }
+                                                                });
+                                                            });
+                                                        })
+                                                        .catch(error => {
+                                                            console.log("Error getting character skills:", error);
+                                                        });
+                                                });
+                                            })
+                                            .catch(error => {
+                                                console.log("Error getting character info from ESI:", error);
+                                                // Continue with success response even if ESI fetch fails
+                                                res.render('eve-login-success', { 
+                                                    discordId,
+                                                    layout: 'eve',
+                                                    site: settings.siteTitle,
+                                                    group: settings.groupName,
+                                                    name: jwtContent.name,
+                                                    picture: `https://images.evetech.net/characters/${characterId}/portrait?size=128`,
+                                                    message: `Error adding character. <br><hr><br>${error}`
+                                                });
+                                            });
                                     });
                                 }
                             });

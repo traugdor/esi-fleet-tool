@@ -1,6 +1,7 @@
 const EFT = require('./ESI/EFT');
 const public = require('./ESI/public');
 const translator = require('./ESI/translator');
+const skills = require('./ESI/skills');
 
 /**
  * EVE Online ESI API Integration
@@ -8,6 +9,7 @@ const translator = require('./ESI/translator');
  * - Public data retrieval (character, corporation, alliance info)
  * - ID translation (locations, skills, ships)
  * - EFT fitting parsing and analysis
+ * - Character skills management
  */
 module.exports = {
     /**
@@ -29,6 +31,12 @@ module.exports = {
     translator,
 
     /**
+     * Character skills management
+     * Get and update character skills
+     */
+    skills,
+
+    /**
      * Convenience exports of commonly used functions
      */
     // Public data functions
@@ -46,5 +54,9 @@ module.exports = {
     // EFT functions
     parseEFT: EFT.parseEFT,
     getFittingSkillRequirements: EFT.getFittingSkillRequirements,
-    forceItemUpdate: EFT.forceUpdate  // Add force update function
+    forceItemUpdate: EFT.forceUpdate,
+
+    // Skills functions
+    getCharacterSkills: skills.getCharacterSkills,
+    updateCharacterSkills: skills.updateCharacterSkills
 };
