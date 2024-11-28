@@ -1,10 +1,11 @@
 const websock = require('websocket');
 const { v4:uuid } = require("uuid");
 const ws = require('ws');
+const settings = require('../settings');
 
 module.exports = function(app) {
 
-    const wsServer = new ws.Server({ port:8081 });
+    const wsServer = new ws.Server({ port: settings.websocketPort });
     wsServer.on("connection", socket => {
         console.log("Got connection");
         socket.id = uuid();

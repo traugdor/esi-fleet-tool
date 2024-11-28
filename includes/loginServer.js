@@ -77,7 +77,10 @@ module.exports = function(app, settings) {
                         pageTitle: 'Access Denied',
                         errorMessage: 'You are not a member of the required Discord server.',
                         technicalDetails: `Server ID: ${settings.GuildId}`,
-                        fourohfour: true
+                        fourohfour: true,
+                        websocketPort: settings.websocketPort,
+                        group: settings.groupName,
+                        site: settings.siteTitle
                     });
                 }
                 
@@ -103,7 +106,10 @@ module.exports = function(app, settings) {
                         pageTitle: 'Welcome to ESI Fleet Tool',
                         loggedIn: true,
                         nickname: req.session.esifleettool.discordUser.nickname,
-                        fourohfour: true
+                        fourohfour: true,
+                        websocketPort: settings.websocketPort,
+                        group: settings.groupName,
+                        site: settings.siteTitle
                     });
                 }
 
@@ -148,7 +154,15 @@ module.exports = function(app, settings) {
         } else {
             req.session.destroy((err) =>{
                 console.log(err);
-                res.send("Not authorized to use application!");
+                res.render('error', {
+                    pageTitle: 'Access Denied',
+                    errorMessage: 'Not authorized to use application!',
+                    technicalDetails: 'No authorization code received',
+                    fourohfour: true,
+                    websocketPort: settings.websocketPort,
+                    group: settings.groupName,
+                    site: settings.siteTitle
+                });
             })
         }
     });

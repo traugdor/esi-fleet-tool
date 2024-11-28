@@ -78,6 +78,7 @@ app.get('/', (req, res) => {
         publicChat: settings.EVEPublicChatChannel,
         loggedIn: req.session.esifleettool?.loggedIn || false,
         fourohfour: false,
+        websocketPort: settings.websocketPort,
         doctrines: [
             { id: 1, name: 'Doctrine 1' },
             { id: 2, name: 'Doctrine 2' }
@@ -125,7 +126,8 @@ app.use((req, res) => {
         ekb: settings.EVEKillboardLink,
         publicChat: settings.EVEPublicChatChannel,
         fourohfour: true,
-        loggedIn: req.session.esifleettool?.loggedIn || false
+        loggedIn: req.session.esifleettool?.loggedIn || false,
+        websocketPort: settings.websocketPort
     };
 
     if (req.session.esifleettool?.loggedIn) {
