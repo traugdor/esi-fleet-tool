@@ -1,3 +1,6 @@
+const { forceItemUpdate } = require('../esi');
+const db = require('../db');
+
 /*
 Handler Template:
 async function handleCommandName(interaction) {
@@ -84,12 +87,42 @@ async function handleSync(interaction, { client, settings, syncBotProfile }) {
 
 async function handleLink(interaction, { settings }) {
     try {
-        const baseUrl = settings.BaseURL || `http://localhost:${settings.port || 3000}`;
+        const baseUrl = settings.DiscordCallbackURL || `http://localhost:${settings.port || 3000}`;
         const loginUrl = `${baseUrl}/eve/login/${interaction.user.id}`;
         
-        await interaction.reply({
-            content: `Click here to link your EVE Online account: ${loginUrl}`,
-            ephemeral: true
+        // Defer reply since this might take a moment
+        await interaction.deferReply({ ephemeral: true });
+        let discordId = interaction.user.id;
+        db.users.getUserByDiscordid({did:discordId}, (err, user) => {
+            if(err) {
+                db.users.saveNewUser({
+                    _id: 0,
+                    type: 2,
+                    did: discordId,
+                    character_info: [],
+                    socketid: 0
+                }, (err, user) => {
+                    if(err) {
+                        console.error('Error in link handler:', err);
+                        interaction.editReply({ 
+                            content: 'There was an error generating the EVE Online login link.',
+                            ephemeral: true
+                        });
+                    } else {
+                        interaction.editReply({
+                            content: `Click here to link your EVE Online account: ${loginUrl}`,
+                            ephemeral: true
+                        });
+                    }
+                });
+            } else {
+                if(user.did == discordId) {
+                    interaction.editReply({
+                        content: `Click here to link your EVE Online account: ${loginUrl}`,
+                        ephemeral: true
+                    });
+                }
+            }
         });
     } catch (error) {
         console.error('Error in link handler:', error);
@@ -99,11 +132,6 @@ async function handleLink(interaction, { settings }) {
         });
     }
 }
-
-const { getCompleteCharacterInfo } = require('../esi');
-const { forceItemUpdate } = require('../esi');
-const db = require('node-persist');
-const eveAuth = require('../eveAuth');
 
 async function handleEVEUPDATED(interaction) {
     try {

@@ -1,4 +1,9 @@
 module.exports = {
+    //
+    // Fill in the values in this file
+    // and rename it to settings.js or this application won't work
+    //
+    
     /****************************
      * General Site Settings
      ****************************/
@@ -67,10 +72,16 @@ module.exports = {
     /****************************
      * Server Configuration
      ****************************/
+    // These values are used by the server and clients.
+    // DO NOT change these values unless you know what you're doing.
     
     // The internal port your application will run on
-    port: 8080,  // Make sure this matches the port in your callback URLs, however you can change it if needed
+    port: 8080,  // Make sure this matches the port in your callback URLs
 
     // The port the websocket server will run on
-    websocketPort: 8081 // Make sure this is one port higher than the application port above
+    internalWebsocketPort: 8081, // Make sure this is one port higher than the application port above
+
+    // The port the websocket clients will try to connect to
+    websocketPort: 8081 // This will be passed to the client-side code
+    
 }

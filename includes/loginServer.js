@@ -76,7 +76,7 @@ module.exports = function(app, settings) {
                     return res.render('error', {
                         pageTitle: 'Access Denied',
                         errorMessage: 'You are not a member of the required Discord server.',
-                        technicalDetails: `Server ID: ${settings.GuildId}`,
+                        technicalDetails: `Server ID has been set by the site admin. If you are a member of the Discord server, please contact the server administrator.`,
                         fourohfour: true,
                         websocketPort: settings.websocketPort,
                         group: settings.groupName,
@@ -103,9 +103,11 @@ module.exports = function(app, settings) {
                     req.session.esifleettool.discordUser.nickname = memberData.nick || req.session.esifleettool.discordUser.username;
                     
                     return res.render('login-success', {
+                        discordUser: memberData,
                         pageTitle: 'Welcome to ESI Fleet Tool',
                         loggedIn: true,
                         nickname: req.session.esifleettool.discordUser.nickname,
+                        message: 'You have successfully logged in and are able to use the bot!',
                         fourohfour: true,
                         websocketPort: settings.websocketPort,
                         group: settings.groupName,
@@ -140,7 +142,17 @@ module.exports = function(app, settings) {
                             console.error('Session save error:', err);
                             throw new Error('Failed to save session');
                         }
-                        res.redirect('/');
+                        res.render('login-success', {
+                            discordUser: memberData,
+                            pageTitle: 'Welcome to ESI Fleet Tool',
+                            message: 'You have successfully logged in and are authorized to use this application.',
+                            loggedIn: true,
+                            nickname: req.session.esifleettool.discordUser.nickname,
+                            fourohfour: true,
+                            websocketPort: settings.websocketPort,
+                            group: settings.groupName,
+                            site: settings.siteTitle
+                        });
                     });
                 });
             })
@@ -155,9 +167,10 @@ module.exports = function(app, settings) {
             req.session.destroy((err) =>{
                 console.log(err);
                 res.render('error', {
+                    discordUser: memberData,
                     pageTitle: 'Access Denied',
-                    errorMessage: 'Not authorized to use application!',
-                    technicalDetails: 'No authorization code received',
+                    loggedIn: false,
+                    errorMessage: 'Your Discord account is not authorized to use this application. Please ensure you have the required roles.',
                     fourohfour: true,
                     websocketPort: settings.websocketPort,
                     group: settings.groupName,

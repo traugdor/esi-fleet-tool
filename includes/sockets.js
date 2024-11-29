@@ -5,7 +5,7 @@ const settings = require('../settings');
 
 module.exports = function(app) {
 
-    const wsServer = new ws.Server({ port: settings.websocketPort });
+    const wsServer = new ws.Server({ port: settings.internalWebsocketPort });
     wsServer.on("connection", socket => {
         console.log("Got connection");
         socket.id = uuid();
