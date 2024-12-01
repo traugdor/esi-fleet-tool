@@ -106,8 +106,56 @@ async function updateCharacterSkills(characterId) {
     });
 }
 
+/**
+ * Get character's skill queue
+ * @param {number} characterId - The EVE character ID
+ * @returns {Promise<Array>} Array of skills in training queue
+ */
+async function getSkillQueue(characterId) {
+    return new Promise((resolve, reject) => {
+        characters.getCharacterInfo({ characterId }, async (err, character) => {
+            if (err) {
+                reject(new Error(`Character not found: ${err}`));
+                return;
+            }
+
+            try {
+                const response = await axios.get(
+                    `${ESI_BASE_URL}/characters/${characterId}/skillqueue/`,
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${character.accessToken}`
+                        }
+                    }
+                );
+
+                if (!response.data) {
+                    reject(new Error('Invalid skill queue data received from ESI'));
+                    return;
+                }
+
+                // Transform the queue data to include training times and completion status
+                const queue = response.data.map(skill => ({
+                    skillId: skill.skill_id,
+                    targetLevel: skill.finished_level,
+                    startTime: skill.start_date,
+                    finishTime: skill.finish_date,
+                    levelStartSp: skill.training_start_sp,
+                    levelEndSp: skill.level_end_sp,
+                    position: skill.queue_position
+                }));
+
+                resolve(queue);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    });
+}
+
 module.exports = {
     getCharacterSkills,
     updateCharacterSkills,
-    getAndSaveCharacterSkills
+    getAndSaveCharacterSkills,
+    getSkillQueue
 };

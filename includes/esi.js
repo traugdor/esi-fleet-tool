@@ -1,62 +1,78 @@
+/**
+ * Central module for all ESI-related functionality
+ */
+
+// Import all ESI modules
 const EFT = require('./ESI/EFT');
 const public = require('./ESI/public');
-const translator = require('./ESI/translator');
+const player = require('./ESI/player');
+const readfleet = require('./ESI/readfleet');
+const writefleet = require('./ESI/writefleet');
+const navigation = require('./ESI/navigation');
 const skills = require('./ESI/skills');
+const translator = require('./ESI/translator');
 
-/**
- * EVE Online ESI API Integration
- * Provides access to all ESI-related functionality including:
- * - Public data retrieval (character, corporation, alliance info)
- * - ID translation (locations, skills, ships)
- * - EFT fitting parsing and analysis
- * - Character skills management
- */
+// Export all modules and their functions
 module.exports = {
-    /**
-     * EFT (EVE Fitting Tool) related functions
-     * Includes parsing EFT formatted fits and analyzing skill requirements
-     */
+    // Full module exports for advanced usage
     EFT,
-
-    /**
-     * Public ESI data retrieval functions
-     * Access character, corporation, and alliance information
-     */
     public,
-
-    /**
-     * ESI ID translation utilities
-     * Convert numeric IDs to human-readable information
-     */
+    player,
+    readfleet,
+    writefleet,
+    navigation,
+    skills,
     translator,
 
-    /**
-     * Character skills management
-     * Get and update character skills
-     */
-    skills,
+    // Player management and authentication
+    refreshAccessToken: player.refreshAccessToken,
+    checkAndRefreshTokens: player.checkAndRefreshTokens,
+    getCharacterOnlineStatus: player.getCharacterOnlineStatus,
+    getCharacterShipType: player.getCharacterShipType,
+    getActiveImplants: player.getActiveImplants,
+    getFullCloneInfo: player.getFullCloneInfo,
 
-    /**
-     * Convenience exports of commonly used functions
-     */
-    // Public data functions
+    // Public ESI endpoints
+    getStatus: public.getStatus,
+    getServerStatus: public.getServerStatus,
     getCharacterInfo: public.getCharacterInfo,
     getCorporationInfo: public.getCorporationInfo,
     getAllianceInfo: public.getAllianceInfo,
     getCompleteCharacterInfo: public.getCompleteCharacterInfo,
 
-    // Translator functions
-    getLocationInfo: translator.getLocationInfo,
-    getSkillInfo: translator.getSkillInfo,
-    getSkillsInfo: translator.getSkillsInfo,
-    getShipInfo: translator.getShipInfo,
+    // Fleet reading operations
+    getFleetInfo: readfleet.getFleetInfo,
+    getFleetMembers: readfleet.getFleetMembers,
+    getFleetWings: readfleet.getFleetWings,
+    getFullFleetInfo: readfleet.getFullFleetInfo,
+    getFleetLeadershipRole: readfleet.getFleetLeadershipRole,
+    captureFleetStructure: readfleet.captureFleetStructure,
 
-    // EFT functions
-    parseEFT: EFT.parseEFT,
-    getFittingSkillRequirements: EFT.getFittingSkillRequirements,
-    forceItemUpdate: EFT.forceUpdate,
+    // Fleet writing operations
+    createWing: writefleet.createWing,
+    createSquad: writefleet.createSquad,
+    moveFleetMember: writefleet.moveFleetMember,
+    reconstructFleetFromTemplate: writefleet.reconstructFleetFromTemplate,
+    updateFleetSettings: writefleet.updateFleetSettings,
+    deleteWing: writefleet.deleteWing,
+    deleteSquad: writefleet.deleteSquad,
+    updateWing: writefleet.updateWing,
+    updateSquad: writefleet.updateSquad,
 
-    // Skills functions
-    getCharacterSkills: skills.getCharacterSkills,
-    updateCharacterSkills: skills.updateCharacterSkills
+    // Navigation and location
+    getCharacterLocation: navigation.getCharacterLocation,
+    getJumpFatigue: navigation.getJumpFatigue,
+    setWaypoint: navigation.setWaypoint,
+
+    // Skills and training
+    getSkills: skills.getSkills,
+    getSkillQueue: skills.getSkillQueue,
+
+    // EFT parsing and fitting
+    parseFitting: EFT.parseFitting,
+    getFitting: EFT.getFitting,
+
+    // Translation services
+    translateIDs: translator.translateIDs,
+    translateNames: translator.translateNames
 };

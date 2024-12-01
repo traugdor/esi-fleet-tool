@@ -39,8 +39,6 @@ module.exports = function(app, settings) {
                 // Store the access token in session
                 req.session.esifleettool = {
                     title: settings.siteTitle,
-                    DiscordUserId: '',
-                    EVEUserId: '',
                     hello: 'Hello!',
                     uuid: uuid(),
                     loggedIn: false,

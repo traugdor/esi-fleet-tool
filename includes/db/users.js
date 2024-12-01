@@ -14,7 +14,6 @@ db.getItem('users').then(function(users){
 /*
     user structure: 
     _id            - generated uuid for each user
-    type           - 1=fc, 2=player
     did            - discord id
     character_info - array of strings
     socketid       - websocket id for this user for this session (agnostic of character or fleet)
@@ -36,12 +35,12 @@ exports.allUsers = getallUsers;
 
 /**
  * 
- * @param {*} data {_id, type, did, eid, character_info, username, password}
+ * @param {*} data {_id, did, character_info, socketid}
  * @param {*} callback function(error, response) { ... }
  */
 
 exports.saveNewUser = function(data, callback) {
-    const {_id, type, did, character_info, socketid} = data;
+    const {_id, did, character_info, socketid} = data;
     
     // Validate and convert character_info to array of strings
     let validatedCharInfo;
@@ -90,7 +89,6 @@ exports.getUserByDiscordid = function(data, callback) {
     //get users and lookup
     db.getItem('users').then(users => {
         var user = users.find(user => user.did == did);
-        console.log(user);
         if(!user) {
             callback(`User with DiscordID ${did} was not found!`, null);
         } else 

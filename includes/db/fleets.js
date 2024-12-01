@@ -3,9 +3,9 @@ const { v4: uuid } = require('uuid');
 
 db.initSync({});
 
-db.getItem('fleets').then(function(characters){
-    //check to see if characters exists in the db
-    if(!characters) {
+db.getItem('fleets').then(function(fleets){
+    //check to see if fleets exists in the db
+    if(!fleets) {
         var fleetarray = [];
         db.setItem('fleets', fleetarray);
     }

@@ -34,6 +34,12 @@ db.getItem('characters').then(function(characters){
         }
 */
 
+exports.getAllCharacters = function(callback) {
+    db.getItem('characters').then((characters) => {
+        callback(null, characters);
+    });
+}
+
 exports.getCharacterInfo = function(data, callback) {
     const {characterId} = data;
     db.getItem('characters').then((characters) => {
